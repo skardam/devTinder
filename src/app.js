@@ -1,17 +1,27 @@
 const express = require('express');
 const app = express();
-app.get('/users', (req, res)=>{
-    res.send({ fullName: 'sushmita', address: 'bangalore' });
+const connectDB = require('./config/database');
+const User = require('./models/user');
+
+app.post("/signup", async (req, res) => {
+    const user = new User({
+        firstName: "Bholu",
+        lastName: "baghel",
+        emailID: "bholu.baghel@gmail.com",
+        password: "password",
+        age: 27,
+        gender: "male"
+    });
+    await user.save();
+    res.send("User created successfully");
 })
-app.post('/users', (req, res)=>{
-    res.send({ fullName: 'Abhishek', address: 'bangalore' });
-})
-app.put('/users', (req, res)=>{
-    res.send({ fullName: 'sachin', address: 'bangalore' });
-})
-app.patch('/users', (req, res)=>{
-    res.send({address: 'bangalore' });
-})
-app.listen(3000, () => {
-    console.log('listening on port 3000');
+
+connectDB().then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(3000, () => {
+        console.log('listening on port 3000');
+    });
+}).catch((err) => {
+    console.log(err);
 });
+
